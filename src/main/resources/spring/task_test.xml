@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       <bean id="taskTest" class="com.eliteams.quick4j.task.PrintTask" />
+       <bean id="taskTestJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+              <property name="targetObject" ref="taskTest"/>
+              <property name="targetMethod">
+                     <value>run</value>
+              </property>
+              <property name="concurrent" value="false"/>
+       </bean>
+       <bean id="taskTestSchedul" class="org.springframework.scheduling.quartz.CronTriggerBean">
+              <property name="jobDetail" ref="taskTestJob"/>
+              <property name="cronExpression">
+                     <value>0/10 * * * * ?</value>
+              </property>
+       </bean>
+
+       <bean id="startQuertz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+              <property name="triggers">
+                     <list>
+                            <ref bean="taskTestSchedul"/>
+                     </list>
+              </property>
+       </bean>
+</beans>
